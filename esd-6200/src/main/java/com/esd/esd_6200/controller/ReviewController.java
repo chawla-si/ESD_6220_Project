@@ -1,8 +1,11 @@
 package com.esd.esd_6200.controller;
 
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
+import com.esd.esd_6200.pojo.Review;
 import com.esd.esd_6200.requestModels.ReviewRequest;
 import com.esd.esd_6200.service.ReviewService;
 import com.esd.esd_6200.utils.ExtractJWT;
@@ -19,7 +22,11 @@ public class ReviewController {
     public ReviewController (ReviewService reviewService) {
         this.reviewService = reviewService;
     }
-
+    
+    @GetMapping("/r")
+    public List<Review> getBooks() {
+        return reviewService.getAllReviews();
+    }
 
     @GetMapping("/secure/user/book")
     public Boolean reviewBookByUser(@RequestHeader(value="Authorization") String token,

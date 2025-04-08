@@ -1,10 +1,13 @@
 package com.esd.esd_6200.service;
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.esd.esd_6200.dao.ReviewRepository;
+import com.esd.esd_6200.pojo.Book;
 import com.esd.esd_6200.pojo.Review;
 import com.esd.esd_6200.requestModels.ReviewRequest;
 
@@ -31,5 +34,10 @@ public class ReviewService {
         review.setReviewDescription(reviewRequest.getReviewDescription());
         review.setUserEmail(userEmail);
         reviewRepository.save(review);
+    }
+    
+    public List<Review> getAllReviews()
+    {
+        return reviewRepository.findAll();
     }
 }

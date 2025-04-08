@@ -1,10 +1,12 @@
 package com.esd.esd_6200.dao;
 
 import org.hibernate.Session;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import com.esd.esd_6200.config.HibernateUtil;
 import com.esd.esd_6200.pojo.Review;
 
 import jakarta.persistence.EntityManager;
@@ -17,6 +19,14 @@ public class ReviewRepository {
 
     public ReviewRepository(EntityManager entityManager) {
         this.sessionFactory = entityManager.unwrap(Session.class).getSessionFactory();
+    }
+    
+    public List<Review> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        	System.out.println("***IN DAO**");
+        	System.out.println(session.createQuery("FROM Review", Review.class).list());
+            return session.createQuery("FROM Review", Review.class).list();
+        }
     }
 
     public List<Review> findBookById(Long bookId, int pageNumber, int pageSize) {
