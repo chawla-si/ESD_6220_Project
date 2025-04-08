@@ -1,5 +1,8 @@
 package com.esd.esd_6200.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,12 +16,18 @@ public class BookService {
 
     private final BookRepository bookRepository;
 //    private final CheckoutRepository checkoutRepository;
-
+    
+    @Autowired
     public BookService(BookRepository bookRepository
 //    		, CheckoutRepository checkoutRepository
     		){
         this.bookRepository = bookRepository;
 //        this.checkoutRepository = checkoutRepository;
+    }
+    
+    public List<Book> getAllBooks()
+    {
+        return bookRepository.findAll();
     }
 //
 //    public Book checkoutBook(String userEmail, Long bookId) throws Exception {

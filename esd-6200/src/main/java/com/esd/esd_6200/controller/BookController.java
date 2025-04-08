@@ -1,7 +1,10 @@
 package com.esd.esd_6200.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import com.esd.esd_6200.pojo.Book;
 import org.springframework.web.bind.annotation.*;
 
 import com.esd.esd_6200.service.BookService;
@@ -10,15 +13,23 @@ import com.esd.esd_6200.utils.ExtractJWT;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api")
 public class BookController {
-
+	
+	@Autowired
     private BookService bookService;
 
     @Autowired
     public BookController(BookService bookservice) {
-        this.bookService = bookservice;
+//        this.bookService = bookservice;
     }
+    
+    @GetMapping("/books")
+  public List<Book> getBooks() {
+      return bookService.getAllBooks();
+  }
+
+    
 
 //    @GetMapping("/secure/currentloans/count")
 //    public int currentLoansCount(@RequestHeader(value = "Authorization") String token) {

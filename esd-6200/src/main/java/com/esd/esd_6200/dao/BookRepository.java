@@ -2,13 +2,18 @@ package com.esd.esd_6200.dao;
 
 
 
+import com.esd.esd_6200.config.HibernateUtil;
 import com.esd.esd_6200.pojo.Book;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
+
 import java.util.List;
 
 @Repository
@@ -16,9 +21,24 @@ public class BookRepository {
 
     private final SessionFactory sessionFactory;
 
+    @Autowired
     public BookRepository(EntityManager entityManager) {
         this.sessionFactory = entityManager.unwrap(Session.class).getSessionFactory();
     }
+    
+    public List<Book> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        	System.out.println("***IN DAO**");
+        	System.out.println(session.createQuery("FROM Book", Book.class).list());
+            return session.createQuery("FROM Book", Book.class).list();
+        }
+    }
+    
+//    @Transactional
+//    public List<Book> findAll() {
+//        Session session = sessionFactory.getCurrentSession();
+//        return session.createQuery("FROM Book", Book.class).getResultList();
+//    }
 
     public Book findById(Long id) {
         Session session = sessionFactory.getCurrentSession();
