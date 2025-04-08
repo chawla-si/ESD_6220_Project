@@ -41,7 +41,7 @@ public class BookRepository {
 //    }
 
     public Book findById(Long id) {
-        Session session = sessionFactory.getCurrentSession();
+    	Session session = HibernateUtil.getSessionFactory().openSession();
         return session.get(Book.class, id);
     }
 

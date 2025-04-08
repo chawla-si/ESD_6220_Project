@@ -25,9 +25,14 @@ public class BookController {
     }
     
     @GetMapping("/books")
-  public List<Book> getBooks() {
+    public List<Book> getBooks() {
       return bookService.getAllBooks();
-  }
+    }
+    
+    @GetMapping("/book")
+    public Book getBookById(@RequestParam(name = "bookId") Long bookId) {
+      return bookService.findBookById(bookId);
+    }
 
     
 
