@@ -35,5 +35,6 @@
         <!-- Mapping Class -->
         <mapping class="com.esd.esd_6200.pojo.Book"/>
         <mapping class="com.esd.esd_6200.pojo.Review"/>
+        <mapping class="com.esd.esd_6200.pojo.Checkout"/>
     </session-factory>
 </hibernate-configuration>

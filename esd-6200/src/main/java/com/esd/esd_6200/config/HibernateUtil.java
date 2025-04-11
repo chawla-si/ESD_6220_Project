@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.stereotype.Component;
 
 import com.esd.esd_6200.pojo.Book;
+import com.esd.esd_6200.pojo.Checkout;
 import com.esd.esd_6200.pojo.Review;
 
 
@@ -30,6 +31,7 @@ public class HibernateUtil {
                 // Explicitly register the Book class
                 sources.addAnnotatedClass(Book.class);
                 sources.addAnnotatedClass(Review.class);
+                sources.addAnnotatedClass(Checkout.class);
 
                 // Create Metadata
                 Metadata metadata = sources.getMetadataBuilder().build();
