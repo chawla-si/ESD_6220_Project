@@ -104,6 +104,45 @@ public class BookRepository {
         }
     }
     
+    public Page<Book> findByCategoryContaining(String category, Pageable pageable) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Create base query
+            String countQueryString = "SELECT COUNT(b) FROM Book b WHERE LOWER(b.category) LIKE LOWER(:category)";
+            String queryString = "FROM Book b WHERE LOWER(b.category) LIKE LOWER(:category)";
+            
+            // Apply sorting if provided
+            if (pageable.getSort().isSorted()) {
+                StringBuilder sortClause = new StringBuilder(" ORDER BY ");
+                boolean first = true;
+                
+                for (Sort.Order order : pageable.getSort()) {
+                    if (!first) {
+                        sortClause.append(", ");
+                    }
+                    sortClause.append("b.").append(order.getProperty())
+                           .append(" ").append(order.getDirection().name());
+                    first = false;
+                }
+                queryString += sortClause.toString();
+            }
+            
+            // Execute count query
+            Query<Long> countQuery = session.createQuery(countQueryString, Long.class);
+            countQuery.setParameter("category", "%" + category + "%");
+            long total = countQuery.uniqueResult();
+            
+            // Execute main query with pagination
+            Query<Book> query = session.createQuery(queryString, Book.class);
+            query.setParameter("category", "%" + category + "%");
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageable.getPageSize());
+            
+            List<Book> books = query.getResultList();
+            
+            return new PageImpl<>(books, pageable, total);
+        }
+    }
+    
 //    @Transactional
 //    public List<Book> findAll() {
 //        Session session = sessionFactory.getCurrentSession();
