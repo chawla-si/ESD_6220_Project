@@ -60,6 +60,26 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
     
+    @GetMapping("/search/title")
+    public ResponseEntity<Map<String, Object>> searchBooksByTitle(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Page<Book> booksPage = bookService.findBooksByTitle(title, page, size, sortBy, direction);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("books", booksPage.getContent());
+        response.put("currentPage", booksPage.getNumber());
+        response.put("totalItems", booksPage.getTotalElements());
+        response.put("totalPages", booksPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+    
+    
 
 //    @GetMapping("/secure/currentloans/count")
 //    public int currentLoansCount(@RequestHeader(value = "Authorization") String token) {

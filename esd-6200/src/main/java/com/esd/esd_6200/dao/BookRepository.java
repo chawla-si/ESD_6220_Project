@@ -65,6 +65,45 @@ public class BookRepository {
         }
     }
     
+    public Page<Book> findByTitleContaining(String title, Pageable pageable) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Create base query
+            String countQueryString = "SELECT COUNT(b) FROM Book b WHERE LOWER(b.title) LIKE LOWER(:title)";
+            String queryString = "FROM Book b WHERE LOWER(b.title) LIKE LOWER(:title)";
+            
+            // Apply sorting if provided
+            if (pageable.getSort().isSorted()) {
+                StringBuilder sortClause = new StringBuilder(" ORDER BY ");
+                boolean first = true;
+                
+                for (Sort.Order order : pageable.getSort()) {
+                    if (!first) {
+                        sortClause.append(", ");
+                    }
+                    sortClause.append("b.").append(order.getProperty())
+                           .append(" ").append(order.getDirection().name());
+                    first = false;
+                }
+                queryString += sortClause.toString();
+            }
+            
+            // Execute count query
+            Query<Long> countQuery = session.createQuery(countQueryString, Long.class);
+            countQuery.setParameter("title", "%" + title + "%");
+            long total = countQuery.uniqueResult();
+            
+            // Execute main query with pagination
+            Query<Book> query = session.createQuery(queryString, Book.class);
+            query.setParameter("title", "%" + title + "%");
+            query.setFirstResult((int) pageable.getOffset());
+            query.setMaxResults(pageable.getPageSize());
+            
+            List<Book> books = query.getResultList();
+            
+            return new PageImpl<>(books, pageable, total);
+        }
+    }
+    
 //    @Transactional
 //    public List<Book> findAll() {
 //        Session session = sessionFactory.getCurrentSession();
@@ -77,36 +116,36 @@ public class BookRepository {
         }
     }
     
-    public Page<Book> findByTitleContaining(String title, Pageable pageable) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Get total count for this query
-            Query<Long> countQuery = session.createQuery(
-                    "SELECT COUNT(b) FROM Book b WHERE b.title LIKE :title", 
-                    Long.class);
-            countQuery.setParameter("title", "%" + title + "%");
-            Long total = countQuery.getSingleResult();
-            
-            // Get paginated results
-            Query<Book> query = session.createQuery(
-                    "FROM Book b WHERE b.title LIKE :title", 
-                    Book.class);
-            query.setParameter("title", "%" + title + "%");
-            query.setFirstResult((int) pageable.getOffset());
-            query.setMaxResults(pageable.getPageSize());
-            
-            // Apply sorting if present
-            if (pageable.getSort().isSorted()) {
-                pageable.getSort().forEach(order -> {
-                    String property = order.getProperty();
-                    String direction = order.getDirection().name();
-                    query.getQueryString().concat(" ORDER BY b." + property + " " + direction);
-                });
-            }
-            
-            List<Book> books = query.getResultList();
-            return new PageImpl<>(books, pageable, total);
-        }
-    }
+//    public Page<Book> findByTitleContaining(String title, Pageable pageable) {
+//        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+//            // Get total count for this query
+//            Query<Long> countQuery = session.createQuery(
+//                    "SELECT COUNT(b) FROM Book b WHERE b.title LIKE :title", 
+//                    Long.class);
+//            countQuery.setParameter("title", "%" + title + "%");
+//            Long total = countQuery.getSingleResult();
+//            
+//            // Get paginated results
+//            Query<Book> query = session.createQuery(
+//                    "FROM Book b WHERE b.title LIKE :title", 
+//                    Book.class);
+//            query.setParameter("title", "%" + title + "%");
+//            query.setFirstResult((int) pageable.getOffset());
+//            query.setMaxResults(pageable.getPageSize());
+//            
+//            // Apply sorting if present
+//            if (pageable.getSort().isSorted()) {
+//                pageable.getSort().forEach(order -> {
+//                    String property = order.getProperty();
+//                    String direction = order.getDirection().name();
+//                    query.getQueryString().concat(" ORDER BY b." + property + " " + direction);
+//                });
+//            }
+//            
+//            List<Book> books = query.getResultList();
+//            return new PageImpl<>(books, pageable, total);
+//        }
+//    }
     
     public Page<Book> findByCategory(String category, Pageable pageable) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

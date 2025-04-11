@@ -55,6 +55,16 @@ public class BookService {
         
         return new PageImpl<>(books, pageable, total);
     }
+    
+    public Page<Book> findBooksByTitle(String title, int page, int size, String sortBy, String direction) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? 
+                Sort.Direction.DESC : Sort.Direction.ASC;
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        return bookRepository.findByTitleContaining(title, pageable);
+    }
+    
+    
 //
 //    public Book checkoutBook(String userEmail, Long bookId) throws Exception {
 //        Book book = bookRepository.findById(bookId);
