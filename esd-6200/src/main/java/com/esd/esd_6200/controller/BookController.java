@@ -1,7 +1,15 @@
 package com.esd.esd_6200.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.esd.esd_6200.pojo.Book;
@@ -13,7 +21,7 @@ import com.esd.esd_6200.utils.ExtractJWT;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/books")
 public class BookController {
 	
 	@Autowired
@@ -24,16 +32,33 @@ public class BookController {
 //        this.bookService = bookservice;
     }
     
-    @GetMapping("/books")
-    public List<Book> getBooks() {
-      return bookService.getAllBooks();
-    }
+//    @GetMapping("/books")
+//    public List<Book> getBooks() {
+//      return bookService.getAllBooks();
+//    }
     
     @GetMapping("/book")
     public Book getBookById(@RequestParam(name = "bookId") Long bookId) {
       return bookService.findBookById(bookId);
     }
+    
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
 
+        Page<Book> booksPage = bookService.getPaginatedBooks(page, size, sortBy, direction);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("books", booksPage.getContent());
+        response.put("currentPage", booksPage.getNumber());
+        response.put("totalItems", booksPage.getTotalElements());
+        response.put("totalPages", booksPage.getTotalPages());
+        
+        return ResponseEntity.ok(response);
+    }
     
 
 //    @GetMapping("/secure/currentloans/count")

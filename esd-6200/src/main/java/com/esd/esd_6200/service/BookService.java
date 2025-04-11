@@ -1,11 +1,17 @@
 package com.esd.esd_6200.service;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Pageable;
 
 import com.esd.esd_6200.dao.BookRepository;
 import com.esd.esd_6200.pojo.Book;
@@ -26,14 +32,28 @@ public class BookService {
 //        this.checkoutRepository = checkoutRepository;
     }
     
-    public List<Book> getAllBooks()
-    {
-        return bookRepository.findAll();
-    }
+//    public List<Book> getAllBooks()
+//    {
+//        return bookRepository.findAll();
+//    }
     
     public Book findBookById(Long id)
     {
         return bookRepository.findById(id);
+    }
+    
+    public Page<Book> getPaginatedBooks(int page, int size, String sortBy, String direction) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? 
+                Sort.Direction.DESC : Sort.Direction.ASC;
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        
+        // Since our repository doesn't have a findAll with Pageable, 
+        // we need to implement our own pagination
+        long total = bookRepository.count();
+        List<Book> books = bookRepository.findAll(pageable);
+        
+        return new PageImpl<>(books, pageable, total);
     }
 //
 //    public Book checkoutBook(String userEmail, Long bookId) throws Exception {
