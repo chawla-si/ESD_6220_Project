@@ -79,7 +79,7 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
     
-    @GetMapping("/search/category")
+    @GetMapping("/search/findByCategory")
     public ResponseEntity<Map<String, Object>> searchBooksByCategory(
             @RequestParam String category,
             @RequestParam(defaultValue = "0") int page,
