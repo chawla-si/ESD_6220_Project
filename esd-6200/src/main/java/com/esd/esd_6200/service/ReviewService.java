@@ -40,4 +40,9 @@ public class ReviewService {
     {
         return reviewRepository.findAll();
     }
+    
+    public List<Review> findByBookId(Long bookId) {
+        
+        return reviewRepository.findBookById(bookId, 0, 20);
+    }
 }

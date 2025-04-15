@@ -48,4 +48,9 @@ public class ReviewController {
         }
         reviewService.postReview(userEmail, reviewRequest);
     }
+    
+    @GetMapping("/search/findBookById")
+    public List<Review> findBookById(@RequestParam("bookId") Long bookId) {
+        return reviewService.findByBookId(bookId);
+    }
 }

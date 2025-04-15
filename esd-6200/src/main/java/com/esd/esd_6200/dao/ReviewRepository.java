@@ -30,7 +30,7 @@ public class ReviewRepository {
     }
 
     public List<Review> findBookById(Long bookId, int pageNumber, int pageSize) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Query<Review> query = session.createQuery(
             "from Review r where r.bookId = :bookId order by r.date desc", Review.class);
         query.setParameter("bookId", bookId);
@@ -40,7 +40,7 @@ public class ReviewRepository {
     }
 
     public Review findByUserEmailAndBookId(String userEmail, Long bookId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Query<Review> query = session.createQuery(
             "from Review r where r.userEmail = :userEmail and r.bookId = :bookId",
             Review.class);
@@ -50,14 +50,14 @@ public class ReviewRepository {
     }
 
     public void deleteAllByBookId(Long bookId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Query<?> query = session.createQuery("delete from Review where bookId = :bookId");
         query.setParameter("bookId", bookId);
         query.executeUpdate();
     }
 
     public void save(Review review) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         session.saveOrUpdate(review);
     }
 }
