@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Data;
 
-@Data
+
 public class ReviewRequest {
     private double rating;
 
@@ -12,16 +12,29 @@ public class ReviewRequest {
 
     private Optional<String> reviewDescription;
 
-	public Object getBookId() {
-		return bookId;
-	}
-
-	public Object getRating() {
+	public double getRating() {
 		return rating;
 	}
 
-	public Object getReviewDescription() {
-		// TODO Auto-generated method stub
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
+	public Long getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Long bookId) {
+		this.bookId = bookId;
+	}
+
+	public Optional<String> getReviewDescription() {
 		return reviewDescription;
 	}
+
+	public void setReviewDescription(Optional<String> reviewDescription) {
+		this.reviewDescription = reviewDescription;
+	}
+
+	
 }

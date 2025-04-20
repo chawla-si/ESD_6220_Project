@@ -1,5 +1,6 @@
 package com.esd.esd_6200.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import java.util.Optional;
@@ -14,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
 
 import com.esd.esd_6200.dao.BookRepository;
+import com.esd.esd_6200.dao.CheckoutRepository;
 import com.esd.esd_6200.pojo.Book;
+import com.esd.esd_6200.pojo.Checkout;
 
 
 @Service
@@ -22,14 +25,14 @@ import com.esd.esd_6200.pojo.Book;
 public class BookService {
 
     private final BookRepository bookRepository;
-//    private final CheckoutRepository checkoutRepository;
+    private final CheckoutRepository checkoutRepository;
     
     @Autowired
     public BookService(BookRepository bookRepository
-//    		, CheckoutRepository checkoutRepository
+    		, CheckoutRepository checkoutRepository
     		){
         this.bookRepository = bookRepository;
-//        this.checkoutRepository = checkoutRepository;
+        this.checkoutRepository = checkoutRepository;
     }
     
 //    public List<Book> getAllBooks()
@@ -71,37 +74,37 @@ public class BookService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
         return bookRepository.findByCategoryContaining(category, pageable);
     }
-//
-//    public Book checkoutBook(String userEmail, Long bookId) throws Exception {
-//        Book book = bookRepository.findById(bookId);
-//
-//        Checkout validateCheckout = checkoutRepository.findByUserEmailAndBookId(userEmail, bookId);
-//
-//        if (book == null || validateCheckout != null || book.getCopiesAvailable() <= 0) {
-//            throw new Exception("Book doesn't exist or already checked out by the user");
-//        }
-//
-//        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
-//        bookRepository.save(book);
-//
-//        Checkout checkout = new Checkout(
-//                userEmail,
-//                LocalDate.now().toString(),
-//                LocalDate.now().plusDays(7).toString(),
-//                book.getId()
-//        );
-//
-//        checkoutRepository.save(checkout);
-//
-//        return book;
-//    }
-//
-//    public Boolean checkoutBookByUser(String userEmail, Long bookId) {
-//        return checkoutRepository.findByUserEmailAndBookId(userEmail, bookId) != null;
-//    }
-//
-//    public int currentLoansCount(String userEmail){
-//        return checkoutRepository.findBooksByUserEmail(userEmail).size();
-//    }
+
+    public Book checkoutBook(String userEmail, Long bookId) throws Exception {
+        Book book = bookRepository.findById(bookId);
+
+        Checkout validateCheckout = checkoutRepository.findByUserEmailAndBookId(userEmail, bookId);
+
+        if (book == null || validateCheckout != null || book.getCopiesAvailable() <= 0) {
+            throw new Exception("Book doesn't exist or already checked out by the user");
+        }
+
+        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+        bookRepository.save(book);
+
+        Checkout checkout = new Checkout(
+                userEmail,
+                LocalDate.now().toString(),
+                LocalDate.now().plusDays(7).toString(),
+                book.getId()
+        );
+
+        checkoutRepository.save(checkout);
+
+        return book;
+    }
+
+    public Boolean checkoutBookByUser(String userEmail, Long bookId) {
+        return checkoutRepository.findByUserEmailAndBookId(userEmail, bookId) != null;
+    }
+
+    public int currentLoansCount(String userEmail){
+        return checkoutRepository.findBooksByUserEmail(userEmail).size();
+    }
 }
 

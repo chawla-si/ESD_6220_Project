@@ -10,7 +10,7 @@ import com.esd.esd_6200.requestModels.ReviewRequest;
 import com.esd.esd_6200.service.ReviewService;
 import com.esd.esd_6200.utils.ExtractJWT;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/reviews")
 
@@ -36,6 +36,7 @@ public class ReviewController {
         if (userEmail == null) {
             throw new Exception("User email is missing");
         }
+        System.out.println("In Review Controller userEmail: "+ userEmail);
         return reviewService.userReviewListed(userEmail, bookId);
     }
 

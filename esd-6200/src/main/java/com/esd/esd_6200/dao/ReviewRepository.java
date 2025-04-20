@@ -56,8 +56,19 @@ public class ReviewRepository {
         query.executeUpdate();
     }
 
+//    public void save(Review review) {
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        System.out.println("*** I am saving review ");
+//        session.saveOrUpdate(review);
+//    }
     public void save(Review review) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.saveOrUpdate(review);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            System.out.println("*** I am saving review ");
+            session.merge(review);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace(); // or log
+        }
     }
 }

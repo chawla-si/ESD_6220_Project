@@ -29,9 +29,9 @@ public class ReviewService {
 
     public void postReview(String userEmail, ReviewRequest reviewRequest) {
         Review review = new Review();
-        review.setBookId(reviewRequest.getBookId());
+        review.setBookId(reviewRequest.getBookId());;
         review.setRating(reviewRequest.getRating());
-        review.setReviewDescription(reviewRequest.getReviewDescription());
+        review.setReviewDescription(reviewRequest.getReviewDescription().orElse(null));
         review.setUserEmail(userEmail);
         reviewRepository.save(review);
     }
