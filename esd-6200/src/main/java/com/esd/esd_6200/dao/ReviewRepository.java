@@ -4,12 +4,15 @@ import org.hibernate.Session;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import com.esd.esd_6200.config.HibernateUtil;
 import com.esd.esd_6200.pojo.Review;
 
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 
 @Repository
@@ -48,12 +51,17 @@ public class ReviewRepository {
         query.setParameter("bookId", bookId);
         return query.uniqueResult();
     }
-
+    
     public void deleteAllByBookId(Long bookId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Query<?> query = session.createQuery("delete from Review where bookId = :bookId");
-        query.setParameter("bookId", bookId);
-        query.executeUpdate();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            Query<?> query = session.createQuery("delete from Review where bookId = :bookId");
+            query.setParameter("bookId", bookId);
+            query.executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //    public void save(Review review) {

@@ -9,4 +9,5 @@ public class Esd6200Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Esd6200Application.class, args);
 	}
+
 }

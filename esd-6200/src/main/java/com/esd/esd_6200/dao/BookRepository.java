@@ -265,17 +265,11 @@ public class BookRepository {
     
     public void delete(Book book) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            try {
-                Book managedBook = session.get(Book.class, book.getId());
-                if (managedBook != null) {
-                    session.remove(managedBook);
-                }
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-                throw e;
-            }
+            session.beginTransaction();
+            session.delete(book);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     public void deleteById(Long id) {

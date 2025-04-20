@@ -63,8 +63,9 @@ public class AdminService {
         if (book == null) {
             throw new Exception("Book not found");
         }
-        bookRepository.delete(book);
         checkoutRepository.deleteAllByBookId(bookId);
         reviewRepository.deleteAllByBookId(bookId);
+        bookRepository.delete(book);
+
     }
 }
