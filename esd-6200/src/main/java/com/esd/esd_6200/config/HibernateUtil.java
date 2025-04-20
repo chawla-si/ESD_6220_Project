@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.esd.esd_6200.pojo.Book;
 import com.esd.esd_6200.pojo.Checkout;
+import com.esd.esd_6200.pojo.Message;
 import com.esd.esd_6200.pojo.Review;
 
 
@@ -32,6 +33,7 @@ public class HibernateUtil {
                 sources.addAnnotatedClass(Book.class);
                 sources.addAnnotatedClass(Review.class);
                 sources.addAnnotatedClass(Checkout.class);
+                sources.addAnnotatedClass(Message.class);
 
                 // Create Metadata
                 Metadata metadata = sources.getMetadataBuilder().build();
