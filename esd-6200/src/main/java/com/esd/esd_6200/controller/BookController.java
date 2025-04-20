@@ -60,7 +60,7 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
     
-    @GetMapping("/search/title")
+    @GetMapping("/search/findByTitleContaining")
     public ResponseEntity<Map<String, Object>> searchBooksByTitle(
             @RequestParam String title,
             @RequestParam(defaultValue = "0") int page,
