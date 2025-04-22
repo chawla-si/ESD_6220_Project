@@ -85,7 +85,7 @@ public class BookService {
         }
 
         book.setCopiesAvailable(book.getCopiesAvailable() - 1);
-        bookRepository.save(book);
+        bookRepository.update(book);
 
         Checkout checkout = new Checkout(
                 userEmail,
